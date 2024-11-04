@@ -429,8 +429,11 @@ function checkBrickCollision(brick) {
     // Cambiamos el estado del ladrillo a destruido
     brick.status = BRICK_STATUS.DESTROYED;
 
-    // Generamos un power-up al destruir el ladrillo
-    generatePowerUp(brick.x, brick.y);
+    // Generar un power-up aleatorio con un 20% de probabilidad
+    const chanceOfPowerUp = Math.random(); // Genera un número entre 0 y 1
+    if (chanceOfPowerUp < 0.2) { // Si el número es menor que 0.2 (20% de probabilidad)
+      generatePowerUp(brick.x, brick.y);
+    }
   }
 }
 
@@ -678,7 +681,3 @@ function startGame() {
   draw();  // Començar a dibuixar el joc
   initEvents();  // Inicialitzar els esdeveniments de teclat
 }
-
-
-// Inicializamos el juego
-startGame();

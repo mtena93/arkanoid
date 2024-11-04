@@ -35,18 +35,18 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #000;
+  background-image: url('./img/portada.png'); /* Imagen de fondo */
+  background-size: cover; /* Ajusta la imagen para que cubra todo el área */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
   color: white;
   z-index: 10; /* Siempre por encima del canvas */
 }
 
-#start-screen h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
 
 #start-button {
-  padding: 10px 20px;
+  margin-top: 200px;
+  padding: 5px;
   font-size: 24px;
   cursor: pointer;
   border: none;
