@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Arkanoid en JavaScript</title>
+</head>
+<body>
+
+<!-- Pantalla de inicio -->
+<div id="start-screen">
+    <h1>Joc de Pilota</h1>
+    <button id="start-button">Jugar</button>
+</div>
+
+<!-- Canvas del juego -->
+<canvas></canvas>
+
+<!-- Pantalla de final del juego -->
+<div id="gameover-screen" class="overlay" style="display: none;">
+  <h1>Fin del Juego</h1>
+  <button id="restart-button">Reiniciar</button>
+</div>
+
+  <!-- Imatges ocultes per a sprites i power-ups -->
+  <img hidden id="sprite" src="./img/sprite.png" alt="Sprite Arkanoid">
+  <img hidden id="bricks" src="./img/bricks.png" alt="Sprite Bricks Arkanoid">
+  <img hidden id="heart" src="./img/heart.png" alt="Heart Icon">
+  <img hidden id="paddleLarge" src="./img/paleta-large.png" alt="Paddle Large Icon">
+  <img hidden id="fastBall" src="./img/relampago.png" alt="Fast Ball Icon">
+  <img hidden id="slowBall" src="./img/tortuga.png" alt="Slow Ball Icon">
+
+</body>
+<script src="script.js"></script>
+</html>
