@@ -10,7 +10,9 @@
 
 <!-- Pantalla de inicio -->
 <div id="start-screen">
+    <h1>ARKANOID</h1>
     <button id="start-button">JUGAR</button>
+    <button id="help-button">AYUDA</button> <!-- Botón de ayuda -->
 </div>
 
 <!-- Canvas del juego -->
@@ -22,13 +24,37 @@
   <button id="restart-button">Reiniciar</button>
 </div>
 
-  <!-- Imatges ocultes per a sprites i power-ups -->
-  <img hidden id="sprite" src="./img/sprite.png" alt="Sprite Arkanoid">
-  <img hidden id="bricks" src="./img/bricks.png" alt="Sprite Bricks Arkanoid">
-  <img hidden id="heart" src="./img/heart.png" alt="Heart Icon">
-  <img hidden id="paddleLarge" src="./img/paleta-large.png" alt="Paddle Large Icon">
-  <img hidden id="fastBall" src="./img/relampago.png" alt="Fast Ball Icon">
-  <img hidden id="slowBall" src="./img/tortuga.png" alt="Slow Ball Icon">
+<!-- Pantalla de ayuda -->
+<div id="help-screen" class="overlay" style="display: none;">
+  <h1>Power-ups</h1>
+  <div class="help-content">
+    <div class="power-up-info">
+      <img src="./img/heart.png" alt="Vida Extra">
+      <p>Vida extra: Aumenta una vida.</p>
+    </div>
+    <div class="power-up-info">
+      <img src="./img/paleta-large.png" alt="Paleta Grande">
+      <p>Paleta Grande: La paleta se hace más grande.</p>
+    </div>
+    <div class="power-up-info">
+      <img src="./img/relampago.png" alt="Pelota Rápida">
+      <p>Pelota Rápida: La pelota se mueve más rápido.</p>
+    </div>
+    <div class="power-up-info">
+      <img src="./img/tortuga.png" alt="Pelota Lenta">
+      <p>Pelota Lenta: La pelota se mueve más lento.</p>
+    </div>
+  </div>
+  <button id="back-button">VOLVER</button>
+</div>
+
+<!-- Imatges ocultes per a sprites i power-ups -->
+<img hidden id="sprite" src="./img/sprite.png" alt="Sprite Arkanoid">
+<img hidden id="bricks" src="./img/bricks.png" alt="Sprite Bricks Arkanoid">
+<img hidden id="heart" src="./img/heart.png" alt="Heart Icon">
+<img hidden id="paddleLarge" src="./img/paleta-large.png" alt="Paddle Large Icon">
+<img hidden id="fastBall" src="./img/relampago.png" alt="Fast Ball Icon">
+<img hidden id="slowBall" src="./img/tortuga.png" alt="Slow Ball Icon">
 
 </body>
 <script src="script.js"></script>

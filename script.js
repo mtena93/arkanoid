@@ -4,6 +4,9 @@ const ctx = canvas.getContext('2d');
 document.addEventListener('DOMContentLoaded', () => {
   const startScreen = document.getElementById('start-screen');
   const startButton = document.getElementById('start-button');
+  const helpButton = document.getElementById('help-button');
+  const helpScreen = document.getElementById('help-screen');
+  const backButton = document.getElementById('back-button');
   const canvas = document.querySelector('canvas');
 
   // Quan es fa clic a "Jugar", es fa desaparèixer la pantalla inicial i es mostra el canvas
@@ -11,6 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
     startScreen.style.display = 'none'; // Amaguem la pantalla d'inici
     canvas.style.display = 'block'; // Mostrem el canvas del joc
     startGame(); // Iniciem el joc
+  });
+
+   // Mostrar la pantalla de juego al hacer clic en "Jugar"
+   startButton.addEventListener('click', () => {
+    startScreen.style.display = 'none'; // Ocultar la pantalla de inicio
+    canvas.style.display = 'block'; // Mostrar el canvas
+    startGame(); // Iniciar el juego
+  });
+
+  // Mostrar la pantalla de ayuda al hacer clic en "Ayuda"
+  helpButton.addEventListener('click', () => {
+    startScreen.style.display = 'none'; // Ocultar la pantalla de inicio
+    helpScreen.style.display = 'flex'; // Mostrar la pantalla de ayuda
+  });
+
+  // Volver al menú principal desde la pantalla de ayuda
+  backButton.addEventListener('click', () => {
+    helpScreen.style.display = 'none'; // Ocultar la pantalla de ayuda
+    startScreen.style.display = 'flex'; // Mostrar la pantalla de inicio
   });
 });
 
@@ -206,10 +228,11 @@ function checkWallCollisions() {
 }
 
 
+
 // Comprobar colisiones con la paleta
 function checkPaddleCollision() {
   const isBallSameXAsPaddle = x > paddleX && x < paddleX + paddleWidth;
-  const isBallTouchingPaddle = y + dy > paddleY;
+  const isBallTouchingPaddle = y + dy >= paddleY && y + dy <= paddleY + paddleHeight;
 
   if (isBallSameXAsPaddle && isBallTouchingPaddle) {
     // Calcular el punto de impacto de la pelota en la paleta
@@ -223,10 +246,12 @@ function checkPaddleCollision() {
     const speed = Math.sqrt(dx * dx + dy * dy); // Mantener la velocidad constante
     dx = speed * Math.sin(bounceAngle); // Ajustar la velocidad horizontal
     dy = -speed * Math.cos(bounceAngle); // Ajustar la velocidad vertical (invertida para el rebote hacia arriba)
-  } else if (y + dy > canvas.height - ballRadius || y + dy > paddleY + paddleHeight) {
-    loseLife(); // Llamamos a la función que maneja la pérdida de vidas
+
+    // Aseguramos que la pelota no atraviese la paleta moviéndola justo encima
+    y = paddleY - ballRadius;
   }
 }
+
 
 
   
@@ -399,8 +424,6 @@ function movePowerUps() {
 
 /* ----------------------------- Lógica del juego ----------------------------- */
 
-
-
 // Función para detectar colisiones entre la pelota y los ladrillos
 function collisionDetection() {
   bricks.forEach((column) => {
@@ -418,30 +441,31 @@ function checkBrickCollision(brick) {
   if (x + ballRadius > brick.x && x - ballRadius < brick.x + brickWidth &&
       y + ballRadius > brick.y && y - ballRadius < brick.y + brickHeight) {
     
-    // Determinamos desde qué lado la pelota está impactando al ladrillo
-    const ballHitFromLeftOrRight = x + ballRadius >= brick.x && x - ballRadius <= brick.x + brickWidth;
-    const ballHitFromTopOrBottom = y + ballRadius >= brick.y && y - ballRadius <= brick.y + brickHeight;
+    // Determinamos la posición relativa de la pelota al ladrillo
+    const fromLeft = x + ballRadius - brick.x;  // Distancia desde el borde izquierdo
+    const fromRight = brick.x + brickWidth - (x - ballRadius); // Distancia desde el borde derecho
+    const fromTop = y + ballRadius - brick.y;   // Distancia desde la parte superior
+    const fromBottom = brick.y + brickHeight - (y - ballRadius); // Distancia desde la parte inferior
 
-    // Si la pelota impacta en los lados izquierdo o derecho, invertimos dx (rebote horizontal)
-    if (ballHitFromLeftOrRight && (x < brick.x || x > brick.x + brickWidth)) {
+    // Determinamos si la colisión es más horizontal o vertical
+    const minDistance = Math.min(fromLeft, fromRight, fromTop, fromBottom);
+
+    if (minDistance === fromLeft || minDistance === fromRight) {
+      // Colisión desde los lados del ladrillo, invertimos dx
       dx = -dx;
-    }
-
-    // Si la pelota impacta en la parte superior o inferior, invertimos dy (rebote vertical)
-    if (ballHitFromTopOrBottom && (y < brick.y || y > brick.y + brickHeight)) {
+    } else if (minDistance === fromTop || minDistance === fromBottom) {
+      // Colisión desde arriba o abajo, invertimos dy
       dy = -dy;
     }
 
     // Cambiamos el estado del ladrillo a destruido
     brick.status = BRICK_STATUS.DESTROYED;
 
-    // Generar un power-up aleatorio con un 20% de probabilidad
-    const chanceOfPowerUp = Math.random(); // Genera un número entre 0 y 1
-    if (chanceOfPowerUp < 0.5) { // Si el número es menor que 0.5 (50% de probabilidad)
-      generatePowerUp(brick.x, brick.y);
-    }
+    // Generamos un power-up al destruir el ladrillo
+    generatePowerUp(brick.x, brick.y);
   }
 }
+
 
 
 // Función para controlar el movimiento de la pelota
