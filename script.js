@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+let isPaused = false; // Para controlar si el juego está en pausa
 
 document.addEventListener('DOMContentLoaded', () => {
   const startScreen = document.getElementById('start-screen');
@@ -8,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const helpScreen = document.getElementById('help-screen');
   const backButton = document.getElementById('back-button');
   const canvas = document.querySelector('canvas');
+
+  const pauseMenu = document.getElementById('pause-menu'); // Menú de pausa
+  const menuButton = document.getElementById('menu-button'); // Botón de ir al menú principal
+  const restartGameButton = document.getElementById('restart-game-button'); // Botón de reiniciar el juego
+  const cancelButton = document.getElementById('cancel-button'); // Botón de cancelar la pausa
 
   // Quan es fa clic a "Jugar", es fa desaparèixer la pantalla inicial i es mostra el canvas
   startButton.addEventListener('click', () => {
@@ -34,7 +40,47 @@ document.addEventListener('DOMContentLoaded', () => {
     helpScreen.style.display = 'none'; // Ocultar la pantalla de ayuda
     startScreen.style.display = 'flex'; // Mostrar la pantalla de inicio
   });
+
+  // Añadir eventos para el menú de pausa
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      togglePauseMenu();
+    }
+  });
+
+  menuButton.addEventListener('click', () => {
+    pauseMenu.style.display = 'none'; // Ocultar el menú de pausa
+    canvas.style.display = 'none'; // Ocultar el canvas del juego
+    resetGame(); // Reiniciamos el juego (opcional, si quieres que el juego se reinicie al volver al menú)
+    startScreen.style.display = 'flex'; // Mostrar la pantalla de inicio
+  });
+
+  restartGameButton.addEventListener('click', () => {
+    pauseMenu.style.display = 'none'; // Ocultar el menú de pausa
+    resetGame(); // Reiniciar el juego
+    isPaused = false; // Quitar la pausa
+    startGame(); // Volver a empezar el juego
+  });
+
+  cancelButton.addEventListener('click', () => {
+    pauseMenu.style.display = 'none'; // Ocultar el menú de pausa
+    isPaused = false; // Quitar la pausa
+    draw(); // Continuar el juego desde donde estaba
+  });
 });
+
+//Comprovar si esta en pausa
+function togglePauseMenu() {
+  const pauseMenu = document.getElementById('pause-menu');
+  if (isPaused) {
+    pauseMenu.style.display = 'none';
+    isPaused = false;
+    draw(); // Continuar el juego
+  } else {
+    pauseMenu.style.display = 'flex';
+    isPaused = true;
+  }
+}
 
 
 /* ----------------------------- Variables del juego ----------------------------- */
@@ -251,12 +297,6 @@ function checkPaddleCollision() {
     y = paddleY - ballRadius;
   }
 }
-
-
-
-  
-  
-
 
 // Funció per generar power-ups amb probabilitat aleatòria
 function generatePowerUp(ladrilloX, ladrilloY) {
@@ -565,15 +605,16 @@ function drawNotification() {
 
 // Función para resetear las variables del juego
 function resetGame() {
-  lives = 3;
-  currentLevel = 0;
-  gameOver = false;
-  loadLevel(currentLevel);
-  x = canvas.width / 2; // Posicionamos la pelota de nuevo
+  lives = 3; // Restaurar el número de vidas
+  currentLevel = 0; // Volver al primer nivel
+  gameOver = false; // El juego ya no está terminado
+  isPaused = false; // El juego no está en pausa
+  loadLevel(currentLevel); // Cargar el primer nivel
+  x = canvas.width / 2; // Posicionar la pelota de nuevo en el centro
   y = canvas.height - 30;
-  dx = initialSpeed; // Restauramos la velocidad inicial de la pelota
+  dx = initialSpeed; // Restaurar la velocidad inicial de la pelota
   dy = -initialSpeed;
-  paddleX = (canvas.width - paddleWidth) / 2; // Restauramos la posición de la paleta
+  paddleX = (canvas.width - paddleWidth) / 2; // Restaurar la posición de la paleta
 }
 
 // Función para mostrar la pantalla de fin del juego
@@ -618,6 +659,7 @@ function initEvents() {
     }
   }
 }
+
 
 /* ----------------------------- Función para comprobar si el nivel está completo ----------------------------- */
 
@@ -676,7 +718,7 @@ function updateGameState() {
 
 // Función principal de renderización del juego
 function draw() {
-  if (gameOver) return; // Si el juego terminó, no dibujamos más
+  if (gameOver || isPaused) return; // Si el juego terminó o está en pausa, no dibujamos más
 
   window.requestAnimationFrame(draw);
 
