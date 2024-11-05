@@ -205,23 +205,29 @@ function checkWallCollisions() {
   }
 }
 
+
 // Comprobar colisiones con la paleta
 function checkPaddleCollision() {
   const isBallSameXAsPaddle = x > paddleX && x < paddleX + paddleWidth;
   const isBallTouchingPaddle = y + dy > paddleY;
 
   if (isBallSameXAsPaddle && isBallTouchingPaddle) {
-    dy = -dy;
+    // Calcular el punto de impacto de la pelota en la paleta
+    const relativeImpact = (x - paddleX) / paddleWidth; // Proporción de la posición de la pelota en la paleta (entre 0 y 1)
+    
+    // Ajustar el ángulo del rebote basándonos en el punto de impacto
+    const maxBounceAngle = Math.PI / 3; // Ángulo máximo de rebote (60 grados)
+    const bounceAngle = (relativeImpact - 0.5) * 2 * maxBounceAngle; // Calcular el ángulo de rebote
+
+    // Establecer las nuevas velocidades de la pelota según el ángulo de rebote
+    const speed = Math.sqrt(dx * dx + dy * dy); // Mantener la velocidad constante
+    dx = speed * Math.sin(bounceAngle); // Ajustar la velocidad horizontal
+    dy = -speed * Math.cos(bounceAngle); // Ajustar la velocidad vertical (invertida para el rebote hacia arriba)
   } else if (y + dy > canvas.height - ballRadius || y + dy > paddleY + paddleHeight) {
     loseLife(); // Llamamos a la función que maneja la pérdida de vidas
   }
 }
 
-// Actualizar la posición de la pelota
-function updateBallPosition() {
-  x += dx;
-  y += dy;
-}
 
   
   
@@ -431,7 +437,7 @@ function checkBrickCollision(brick) {
 
     // Generar un power-up aleatorio con un 20% de probabilidad
     const chanceOfPowerUp = Math.random(); // Genera un número entre 0 y 1
-    if (chanceOfPowerUp < 0.2) { // Si el número es menor que 0.2 (20% de probabilidad)
+    if (chanceOfPowerUp < 0.5) { // Si el número es menor que 0.5 (50% de probabilidad)
       generatePowerUp(brick.x, brick.y);
     }
   }
